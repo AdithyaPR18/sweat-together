@@ -11,10 +11,11 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
+        "https://sweat-together.vercel.app/",  # <-- replace after you know it
     ],
     allow_credentials=True,
-    allow_methods=["*"],      # or list only the methods you use
-    allow_headers=["*"],      # or list only required headers
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # --- demo in-memory API below (replace with real DB later) ---
