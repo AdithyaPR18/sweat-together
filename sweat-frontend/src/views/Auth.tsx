@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { login, register } from "../auth";
 
 export default function Auth({ onDone, onGuest, toast }: { onDone: ()=>void; onGuest: ()=>void; toast: (m:string, t?: "ok"|"error")=>void }) {

@@ -1,4 +1,3 @@
-import React from "react";
 export default function Onboarding({ start }: { start: ()=>void }) {
   return (
     <section className="card" style={{marginTop:16}}>
@@ -13,3 +12,4 @@ export default function Onboarding({ start }: { start: ()=>void }) {
     </section>
   );
 }
+

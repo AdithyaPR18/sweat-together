@@ -1,14 +1,16 @@
-import React from "react";
 import { clsx } from "clsx";
 
+type View = "track" | "sessions" | "friends" | "feed";
+
 type Props = {
-  view: string;
-  setView: (v: string) => void;
+  view: View;
+  setView: React.Dispatch<React.SetStateAction<View>>;
   onLogout: () => void;
   guest: boolean;
 };
+
 export default function Sidebar({ view, setView, onLogout, guest }: Props) {
-  const disabled = (k: string) => guest && (k === "sessions" || k === "friends" || k === "feed");
+  const disabled = (k: View) => guest && (k === "sessions" || k === "friends" || k === "feed");
   return (
     <aside className="sidebar">
       <div className="logo">
@@ -16,7 +18,7 @@ export default function Sidebar({ view, setView, onLogout, guest }: Props) {
         <span>Sweat Together</span>
       </div>
       <nav className="nav">
-        {["track","sessions","friends","feed"].map(k => (
+        {(["track","sessions","friends","feed"] as View[]).map(k => (
           <button
             key={k}
             className={clsx(view===k && "active")}

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api";
 
 type Item = { id:number; name:string; exercise:string; reps:number; accuracy:number; ts:string };

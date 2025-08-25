@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+
 import { api } from "../api";
 
 type W = { id:number; exercise:string; reps:number; accuracy:number; ts:string };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../api";
 
 export default function Friends({ guest, toast }: { guest: boolean; toast: (m:string,t?:"ok"|"error")=>void }) {
