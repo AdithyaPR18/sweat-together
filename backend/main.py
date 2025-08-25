@@ -5,17 +5,19 @@ from pydantic import BaseModel
 
 app = FastAPI()
 
-# ✅ CORS: allow your Vite dev server
+ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://sweat-together.vercel.app",  # ← your Vercel URL (exact)
+    # add any custom domains here later, e.g. "https://app.sweat.tld"
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://sweat-together.vercel.app/",  # <-- replace after you know it
-    ],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=ALLOWED_ORIGINS,
+    allow_credentials=True,      # ok if you ever send cookies; fine to keep on
+    allow_methods=["*"],         # OPTIONS/GET/POST/etc.
+    allow_headers=["*"],         # allow Content-Type, Authorization, etc.
 )
 
 # --- demo in-memory API below (replace with real DB later) ---
