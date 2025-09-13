@@ -29,9 +29,9 @@ export default function App() {
       {!authed && !guest ? (
         <main className="main"><Auth onDone={onDoneAuth} onGuest={onGuest} toast={add} /></main>
       ) : (
-        <div className="app">
+        <div className="app-modern">
           <Sidebar view={view} setView={setView} onLogout={logout} guest={guest} />
-          <main className="main">
+          <main className="main-modern">
             <Topbar label={view[0].toUpperCase()+view.slice(1)} me={me} guest={guest} />
             {first ? (
               <Onboarding start={()=>{ setFirst(false); setView("track"); }} />

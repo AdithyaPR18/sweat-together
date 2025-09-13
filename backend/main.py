@@ -1,26 +1,28 @@
-# backend/main.py
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 app = FastAPI()
 
+# ✅ exact origins (dev + prod)
 ALLOWED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://sweat-together.vercel.app",  # ← your Vercel URL (exact)
-    # add any custom domains here later, e.g. "https://app.sweat.tld"
+    "https://sweat-together.vercel.app",  # your live frontend
 ]
 
+# ✅ also allow Vercel preview URLs if you use them
+# (e.g., https://feature-123-abc.vercel.app)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=ALLOWED_ORIGINS,
-    allow_credentials=True,      # ok if you ever send cookies; fine to keep on
-    allow_methods=["*"],         # OPTIONS/GET/POST/etc.
-    allow_headers=["*"],         # allow Content-Type, Authorization, etc.
+    allow_origin_regex=r"^https://[a-z0-9-]+\.vercel\.app$",
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# --- demo in-memory API below (replace with real DB later) ---
+# ---- demo routes (yours may differ) ----
 users = {}
 
 class RegisterBody(BaseModel):
@@ -41,11 +43,16 @@ class LoginBody(BaseModel):
 
 @app.post("/api/login")
 def login(body: LoginBody):
-    user = users.get(body.email)
-    if not user or user["password"] != body.password:
+    u = users.get(body.email)
+    if not u or u["password"] != body.password:
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    return {"token": "demo-token", "user": {"id": 1, "name": user["name"], "email": body.email}}
+    return {"token": "demo-token", "user": {"id": 1, "name": u["name"], "email": body.email}}
 
 @app.get("/api/workouts/my")
 def workouts():
     return {"workouts": []}
+
+# Optional: simple health at "/"
+@app.get("/")
+def root():
+    return {"ok": True}
