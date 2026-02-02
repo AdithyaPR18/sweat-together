@@ -28,6 +28,9 @@ export default function Auth({ onDone, onGuest, toast }: { onDone: () => void; o
       <div className="bg-mesh" />
 
       <div className="auth-header-anim">
+        <h2 style={{ fontFamily: 'Outfit', fontWeight: 700, letterSpacing: -1, background: 'linear-gradient(to right, var(--soul-primary), var(--soul-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontSize: '1.2rem', textTransform: 'uppercase', marginBottom: 16 }}>
+          Sweat Together
+        </h2>
         <h1 className="auth-greeting">Enter the flow.</h1>
         <p className="auth-sub">Your movement, reimagined.</p>
       </div>

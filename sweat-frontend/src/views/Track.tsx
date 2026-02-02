@@ -180,14 +180,25 @@ export default function Track({ toast }: { toast: (m: string, t?: "ok" | "error"
         <div className="hud-controls">
           {/* Exercise Toggle (Simple Text) */}
           {!isTracking && (
-            <button className="btn-ghost" onClick={() => setExercise(e => e === 'pushups' ? 'bicep' : 'pushups')} style={{ fontSize: '1.2rem' }}>
-              Running: {exercise === 'pushups' ? 'Pushups' : 'Curls'}
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+              <div className="tooltip-instruction">Tap to start tracking</div>
+              <div style={{ display: 'flex', gap: 24, alignItems: 'center' }}>
+                <button className="btn-ghost" onClick={() => setExercise(e => e === 'pushups' ? 'bicep' : 'pushups')} style={{ fontSize: '1.2rem' }}>
+                  Target: {exercise === 'pushups' ? 'Pushups' : 'Curls'}
+                </button>
+
+                <button className={`ctrl-btn ${isTracking ? 'active' : ''}`} onClick={toggleTracking} style={{ boxShadow: '0 0 30px rgba(255,255,255,0.2)', animation: 'pulse 2s infinite' }}>
+                  ▶
+                </button>
+              </div>
+            </div>
           )}
 
-          <button className={`ctrl-btn ${isTracking ? 'active' : ''}`} onClick={toggleTracking}>
-            {isTracking ? "◼" : "▶"}
-          </button>
+          {isTracking && (
+            <button className="ctrl-btn active" onClick={toggleTracking}>
+              ◼
+            </button>
+          )}
         </div>
       </div>
     </div>

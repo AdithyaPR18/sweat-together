@@ -33,10 +33,45 @@ export default function App() {
             {view === "feed" && <Feed guest={guest} toast={add} />}
           </main>
 
-          <Dock view={view} setView={setView} guest={guest} />
+          <Dock view={view} setView={setView} />
         </>
       )}
       <Toasts items={list} />
+
+      {/* Persistent Credits */}
+      <div style={{
+        position: 'fixed',
+        bottom: 20,
+        right: 20,
+        zIndex: 900,
+        fontFamily: 'Outfit, sans-serif',
+        fontSize: '0.75rem',
+        color: 'var(--text-faint)',
+        textAlign: 'right',
+        pointerEvents: 'auto'
+      }}>
+        <div style={{ opacity: 0.5, marginBottom: 4 }}>Built by Adithya</div>
+        <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', opacity: 0.8 }}>
+          <a href="https://github.com/AdithyaPR18" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--soul-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'inherit'}>GitHub</a>
+          <a href="https://linkedin.com/in/adithyapr18" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--soul-secondary)'} onMouseOut={(e) => e.currentTarget.style.color = 'inherit'}>LinkedIn</a>
+        </div>
+      </div>
+
+      {/* Branding Watermark (Top Left) */}
+      <div style={{
+        position: 'fixed',
+        top: 24,
+        left: 24,
+        zIndex: 900,
+        fontFamily: 'Outfit, sans-serif',
+        fontWeight: 700,
+        fontSize: '1rem',
+        letterSpacing: -0.5,
+        color: 'rgba(255,255,255,0.15)',
+        pointerEvents: 'none'
+      }}>
+        Sweat Together
+      </div>
     </div>
   );
 }

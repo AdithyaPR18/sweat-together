@@ -5,7 +5,6 @@ type View = "track" | "sessions" | "friends" | "feed";
 type Props = {
     view: View;
     setView: (v: View) => void;
-    guest: boolean;
 };
 
 const items = [
@@ -15,22 +14,21 @@ const items = [
     { key: "feed", icon: "◈", label: "Pulse" },
 ];
 
-export default function Dock({ view, setView, guest }: Props) {
+export default function Dock({ view, setView }: Omit<Props, 'guest'>) {
     return (
         <div className="dock-container glass-panel">
             {items.map((item) => {
-                const disabled = guest && item.key !== "track";
+                // Unlock all tabs for guests (Demo Mode)
+                const isActive = view === item.key;
                 return (
                     <button
                         key={item.key}
-                        className={clsx("dock-item", view === item.key && "active")}
-                        onClick={() => !disabled && setView(item.key as View)}
-                        style={{ opacity: disabled ? 0.3 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }}
+                        className={clsx("dock-item", isActive && "active")}
+                        onClick={() => setView(item.key as View)}
+                        style={{ flexDirection: 'column', gap: 4 }}
                     >
-                        {item.icon}
-                        <div className="dock-tooltip">
-                            {disabled ? "Sign in to access" : item.label}
-                        </div>
+                        <span style={{ fontSize: '1.5rem' }}>{item.icon}</span>
+                        {isActive && <span style={{ fontSize: '0.6rem', letterSpacing: 1, textTransform: 'uppercase' }}>{item.label}</span>}
                     </button>
                 );
             })}
