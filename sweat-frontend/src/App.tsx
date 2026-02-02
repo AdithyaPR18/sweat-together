@@ -53,7 +53,7 @@ export default function App() {
         <div style={{ opacity: 0.5, marginBottom: 4 }}>Built by Adithya</div>
         <div style={{ display: 'flex', gap: 12, justifyContent: 'flex-end', opacity: 0.8 }}>
           <a href="https://github.com/AdithyaPR18" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--soul-primary)'} onMouseOut={(e) => e.currentTarget.style.color = 'inherit'}>GitHub</a>
-          <a href="https://linkedin.com/in/adithyapr18" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--soul-secondary)'} onMouseOut={(e) => e.currentTarget.style.color = 'inherit'}>LinkedIn</a>
+          <a href="https://linkedin.com/in/adithyapramesh" target="_blank" rel="noreferrer" style={{ color: 'inherit', textDecoration: 'none', transition: 'color 0.2s', cursor: 'pointer' }} onMouseOver={(e) => e.currentTarget.style.color = 'var(--soul-secondary)'} onMouseOut={(e) => e.currentTarget.style.color = 'inherit'}>LinkedIn</a>
         </div>
       </div>
 
