@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Analytics } from "@vercel/analytics/react";
 import Dock from "./components/Dock";
 import Toasts from "./components/Toasts";
 import Auth from "./views/Auth";
@@ -72,6 +73,8 @@ export default function App() {
       }}>
         Sweat Together
       </div>
+
+      <Analytics />
     </div>
   );
 }
