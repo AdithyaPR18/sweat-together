@@ -1,173 +1,101 @@
 import { useEffect, useState } from "react";
 import { api } from "../api";
 
-export default function Friends({ guest, toast }: { guest: boolean; toast: (m:string,t?:"ok"|"error")=>void }) {
+export default function Friends({ guest, toast }: { guest: boolean; toast: (m: string, t?: "ok" | "error") => void }) {
   const [q, setQ] = useState("");
   const [results, setResults] = useState<any[]>([]);
   const [inbound, setInbound] = useState<any[]>([]);
-  const [outbound, setOutbound] = useState<any[]>([]);
   const [friends, setFriends] = useState<any[]>([]);
 
   const search = async () => {
-    if (guest) return toast("Login to search and add friends","error");
-    if (!q) return;
-    const d = await api.get<{results:any[]}>("/api/users/search?q=" + encodeURIComponent(q));
-    setResults(d.results||[]);
+    if (!q || guest) return;
+    const d = await api.get<{ results: any[] }>("/api/users/search?q=" + encodeURIComponent(q));
+    setResults(d.results || []);
   };
+
   const refresh = async () => {
     if (guest) return;
-    const reqs = await api.get<{inbound:any[];outbound:any[]}>("/api/friends/requests");
-    setInbound(reqs.inbound||[]); setOutbound(reqs.outbound||[]);
-    const fl = await api.get<{friends:any[]}>("/api/friends");
-    setFriends(fl.friends||[]);
+    const reqs = await api.get<{ inbound: any[] }>("/api/friends/requests");
+    setInbound(reqs.inbound || []);
+    const fl = await api.get<{ friends: any[] }>("/api/friends");
+    setFriends(fl.friends || []);
   };
-  useEffect(()=> { refresh(); }, []);
+  useEffect(() => { refresh(); }, []);
 
   return (
-    <div className="friends-modern">
-      <section className="friends-header">
-        <h1 className="sessions-title">Friends</h1>
-        <p className="sessions-subtitle">Connect with athletes and stay motivated together</p>
-        
-        <div className="search-section">
-          <input 
-            className="search-input" 
-            placeholder="Search by name or email..." 
-            value={q} 
-            onChange={e=>setQ(e.target.value)} 
-            disabled={guest}
-          />
-          <button className="search-btn" onClick={search} disabled={guest}>
-            <span className="btn-icon">🔍</span>
-            Search
-          </button>
-        </div>
-      </section>
+    <div className="page-header">
+      <h1 className="page-title">Tribe</h1>
+      <p style={{ color: 'var(--text-muted)', marginTop: 8 }}>Connect with others in the void.</p>
 
-      {guest ? (
-        <section className="card" style={{textAlign: 'center', padding: '40px'}}>
-          <div style={{fontSize: '3rem', marginBottom: '16px'}}>👥</div>
-          <h3 style={{color: 'var(--text)', marginBottom: '8px'}}>Login Required</h3>
-          <p className="muted">Guest mode: friends and feed are available after login.</p>
-        </section>
-      ) : (
-        <div className="friends-content">
-          <div className="friends-section">
-            <h3 className="section-title">
-              <span className="section-icon">🔍</span>
-              Search Results
-            </h3>
-            {results.length === 0 ? (
-              <div style={{textAlign: 'center', padding: '20px', color: 'var(--muted)'}}>
-                {q ? 'No users found' : 'Search for friends to connect with'}
-              </div>
-            ) : (
-              results.map(u => (
-                <div key={u.id} className="friend-item">
-                  <div className="friend-info">
-                    <div className="friend-name">{u.name}</div>
-                    <div className="friend-email">{u.email}</div>
+      {!guest && (
+        <div style={{ marginTop: 32, display: 'flex', gap: 10 }}>
+          <input
+            className="input-minimal"
+            placeholder="Find souls..."
+            value={q}
+            onChange={e => setQ(e.target.value)}
+            style={{ flex: 1 }}
+          />
+          <button className="btn-ghost" onClick={search}>Search</button>
+        </div>
+      )}
+
+      <div className="minimal-list" style={{ marginTop: 40, padding: 0, margin: 0 }}>
+        {guest ? (
+          <div className="list-item" style={{ justifyContent: 'center', color: 'var(--text-muted)' }}>
+            Sign in to build your tribe.
+          </div>
+        ) : (
+          <>
+            {/* INBOUND */}
+            {inbound.length > 0 && (
+              <div style={{ marginBottom: 20 }}>
+                <h4 style={{ marginBottom: 10, color: 'var(--soul-primary)' }}>Awaiting Response</h4>
+                {inbound.map(r => (
+                  <div key={r.request_id} className="list-item">
+                    <span>{r.name}</span>
+                    <div>
+                      <button className="btn-ghost" onClick={async () => { await api.post("/api/friends/respond", { request_id: r.request_id, action: "accept" }); refresh(); }}>Accept</button>
+                      <button className="btn-ghost" style={{ color: 'var(--error)' }} onClick={async () => { await api.post("/api/friends/respond", { request_id: r.request_id, action: "decline" }); refresh(); }}>Decline</button>
+                    </div>
                   </div>
-                  <button 
-                    className="friend-btn accept" 
-                    onClick={async()=>{ 
-                      await api.post("/api/friends/request",{to_user_id:u.id}); 
-                      toast("Request sent"); 
-                      refresh(); 
-                    }}
-                  >
-                    Add Friend
-                  </button>
+                ))}
+              </div>
+            )}
+
+            {/* SEARCH RESULTS */}
+            {results.length > 0 && (
+              <div style={{ marginBottom: 20 }}>
+                <h4 style={{ marginBottom: 10, color: 'var(--soul-secondary)' }}>Found</h4>
+                {results.map(u => (
+                  <div key={u.id} className="list-item">
+                    <span>{u.name}</span>
+                    <button className="btn-ghost" onClick={async () => { await api.post("/api/friends/request", { to_user_id: u.id }); toast("Request sent"); }}>Add</button>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* FRIENDS */}
+            <h4 style={{ marginBottom: 10, color: 'var(--text-muted)' }}>Allies</h4>
+            {friends.length === 0 ? (
+              <div style={{ padding: 20, color: 'var(--text-muted)', fontStyle: 'italic' }}>No connections yet.</div>
+            ) : (
+              friends.map(f => (
+                <div key={f.id} className="list-item">
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                    <div style={{ width: 32, height: 32, borderRadius: '50%', background: 'var(--void-surface)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {f.name[0]}
+                    </div>
+                    <span>{f.name}</span>
+                  </div>
+                  <span style={{ color: 'var(--soul-primary)', fontSize: '0.8rem' }}>CONNECTED</span>
                 </div>
               ))
             )}
-          </div>
-
-          <div className="friends-section">
-            <h3 className="section-title">
-              <span className="section-icon">⏳</span>
-              Pending Requests
-            </h3>
-            <div style={{display: 'flex', flexDirection: 'column', gap: '16px'}}>
-              <div>
-                <h4 style={{color: 'var(--text)', marginBottom: '12px', fontSize: '1rem'}}>Incoming</h4>
-                {inbound.length === 0 ? (
-                  <div style={{color: 'var(--muted)', fontSize: '.9rem'}}>No incoming requests</div>
-                ) : (
-                  inbound.map(r =>
-                    <div key={r.request_id} className="friend-item">
-                      <div className="friend-info">
-                        <div className="friend-name">{r.name}</div>
-                        <div className="friend-email">{r.email}</div>
-                      </div>
-                      <div className="friend-actions">
-                        <button 
-                          className="friend-btn accept" 
-                          onClick={async()=>{ 
-                            await api.post("/api/friends/respond",{request_id:r.request_id, action:"accept"}); 
-                            toast("Friend added"); 
-                            refresh(); 
-                          }}
-                        >
-                          Accept
-                        </button>
-                        <button 
-                          className="friend-btn decline" 
-                          onClick={async()=>{ 
-                            await api.post("/api/friends/respond",{request_id:r.request_id, action:"decline"}); 
-                            refresh(); 
-                          }}
-                        >
-                          Decline
-                        </button>
-                      </div>
-                    </div>
-                  )
-                )}
-              </div>
-              
-              <div>
-                <h4 style={{color: 'var(--text)', marginBottom: '12px', fontSize: '1rem'}}>Outgoing</h4>
-                {outbound.length === 0 ? (
-                  <div style={{color: 'var(--muted)', fontSize: '.9rem'}}>No pending requests</div>
-                ) : (
-                  outbound.map(r =>
-                    <div key={r.request_id} className="friend-item" style={{opacity: 0.7}}>
-                      <div className="friend-info">
-                        <div className="friend-name">Pending → {r.name}</div>
-                        <div className="friend-email">{r.email}</div>
-                      </div>
-                      <div style={{color: 'var(--muted)', fontSize: '.8rem'}}>Waiting...</div>
-                    </div>
-                  )
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="friends-section">
-            <h3 className="section-title">
-              <span className="section-icon">🤝</span>
-              All Friends
-            </h3>
-            {friends.length === 0 ? (
-              <div style={{textAlign: 'center', padding: '20px', color: 'var(--muted)'}}>
-                No friends yet. Start connecting!
-              </div>
-            ) : (
-              friends.map(f => 
-                <div key={f.id} className="friend-item">
-                  <div className="friend-info">
-                    <div className="friend-name">{f.name}</div>
-                    <div className="friend-email">{f.email}</div>
-                  </div>
-                  <div style={{color: 'var(--accent)', fontSize: '.8rem', fontWeight: '600'}}>Connected</div>
-                </div>
-              )
-            )}
-          </div>
-        </div>
-      )}
+          </>
+        )}
+      </div>
     </div>
   );
 }
